@@ -1,436 +1,327 @@
 ---
-title: "Sample size calculation overview"
+title: "Sample size calculation"
+subtitle: "A High-level Overview"
+date: "`r Sys.Date()`"
 author: "Márton Kiss MD"
-format: pptx
+format: 
+  beamer:
+    theme: "Madrid"
+    colortheme: "rose"
+    fonttheme: "structurebold"
+    fontsize: "10pt"
+    colorlinks: true
 editor: visual
----
-
----
-title: "Sample Size Estimation in Clinical Trials"
-subtitle: "A Comprehensive Guide to Designing Effective Studies"
-author: "Your Name"
-date: "Presentation Date"
-output:
-  xaringan::moon_reader:
-    css: ["default", "default-fonts"]
-    lib_dir: libs
-    nature:
-      highlightStyle: github
-      highlightLines: true
-      countIncrementalSlides: false
+header-includes: |
+  \definecolor{myblue}{RGB}{45, 100, 200}
+  \setbeamercolor{frametitle}{fg=myblue,bg=white}
 ---
 
 # Introduction
 
-Clinical trials are essential for advancing medical knowledge and improving patient care. Determining the appropriate sample size is a critical aspect of trial design. An adequately powered study can detect meaningful effects, while an underpowered study may fail to identify significant findings, wasting resources and time.
+This presentation provides a high-level overview of sample size calculation in clinical trials.
 
----
+We will discuss the key concepts and considerations for estimating the sample size for clinical trials.
 
-# Defining the Primary Endpoint
+The goal of this presentation however is not to provide a comprehensive guide to sample size calculation, but rather to introduce the main concepts and considerations involved in this critical aspect of clinical trial design.
 
-## What is a Primary Endpoint?
+# Example design
 
-- The most crucial outcome measure in a clinical trial, serving as the basis for evaluating the effectiveness of an intervention.
-- Predefined before the study begins and reflects the primary objective of the trial.
-- Determines when and if the trial can be considered a success.
+::: block
+## 
 
----
+Let's consider a hypothetical clinical trial to illustrate the sample size calculation process.
 
-## Flexibility in Endpoint Selection
+-   Two arms (types of treatment received by subjects): A and B
+-   Suppose the sample size is 30
+:::
 
-- **Exploratory vs. Confirmatory Trials**: Trials exist on a spectrum from exploratory to confirmatory.
-  - **Exploratory Trials**: Aim to generate hypotheses or gather preliminary data.
-  - **Confirmatory Trials**: Designed to provide robust evidence supporting the efficacy and safety of an intervention.
-- The distinction is not always clear-cut; many studies have elements of both.
+```{r fig.height=2, fig.width=6}
+source(here::here("inst","figs.r"))
 
----
+gridExtra::grid.arrange(fig_1a_1strep, fig_1b_1strep, nrow = 2)
 
-# Exploratory-Confirmatory Spectrum
+```
 
-<!-- ![Exploratory-Confirmatory Spectrum](images/exploratory_confirmatory_spectrum.png) -->
+# Example design (cont.)
 
-- **Exploratory Studies**:
-  - Hypothesis-generating
-  - Flexible design and endpoints
-  - Smaller sample sizes
-- **Confirmatory Studies**:
-  - Hypothesis-testing
-  - Rigid design with predefined endpoints
-  - Larger sample sizes
-- **Spectrum**: Trials can have varying degrees of exploratory and confirmatory characteristics.
+::: block
+## 
 
----
+The below plot shows the distribution of the outcome variable in the two treatment groups (in red) and the mean values (in blue) for a randomly generated study.
 
-# Study Design Overview
+Parameters used for generation: $\mu_A=7$, $\mu_B=9$, SD=1 for both groups.
+:::
 
-## Parallel Design
+```{r fig.height=2, fig.width=6}
+source(here::here("inst","figs.r"))
 
-- Participants are randomly assigned to one of two or more groups (arms).
-- Each group receives a different intervention (e.g., new treatment vs. placebo or standard care).
-- Outcomes are compared between groups at specified time points.
+gridExtra::grid.arrange(fig_1a_1strep, fig_1b_1strep, nrow = 2)
 
----
+```
 
-## Patient Journey in a Parallel Design Trial
+# Example design, multiple studies
 
-- **Enrollment**: Informed consent and eligibility screening.
-- **Randomization**: Assignment to treatment or control group.
-- **Intervention Period**: Administration of assigned intervention.
-- **Follow-Up Assessments**: Scheduled evaluations for efficacy and safety.
-- **Completion or Withdrawal**: End of participation or early exit from the study.
+::: block
+## 
 
----
+-   Now we simulate 30 similar studies. (The red histograms are severely overplotted, ie. they are like 30 histograms put together.)\
+-   The mean values are shown in blue. They are much more tightly distributed than the individual observations.
+:::
 
-# Regulatory Guidance - ICH E9
+```{r fig.height=2, fig.width=6}
+source(here::here("inst","figs.r"))
 
-## International Council for Harmonisation (ICH) E9
+gridExtra::grid.arrange(fig_2a, fig_2b, nrow = 2)
 
-- **Title**: *Statistical Principles for Clinical Trials*
-- Provides comprehensive guidelines on the statistical considerations in clinical trial design and analysis.
-- Emphasizes the importance of:
-  - Clear objectives and hypotheses.
-  - Appropriate statistical methodologies.
-  - Rigorous data analysis and interpretation.
+```
 
----
+# Example design, multiple studies (contd.)
 
-## Key Aspects of ICH E9
+::: block
+## 
 
-- **Design Considerations**:
-  - Importance of randomization and blinding.
-  - Selection of appropriate endpoints and estimands.
-- **Statistical Analysis**:
-  - Pre-specification of analysis plans.
-  - Handling of missing data.
-- **Interpretation of Results**:
-  - Distinguishing statistical significance from clinical relevance.
-  - Reporting and transparency.
+-   The mean values per group (blue) have a SD of $\frac{1}{\sqrt{30}}$ being much more precise than the individual observations (red).\
+-   This is the principle of the Central Limit Theorem. If **N** is *"big enough"* the mean of the observations will be normally distributed.
+:::
 
----
+```{r fig.height=2, fig.width=6}
+source(here::here("inst","figs.r"))
 
-# Statistical Power and Significance
+gridExtra::grid.arrange(fig_2a, fig_2b, nrow = 2)
 
-## Understanding Statistical Power
+```
 
-- **Definition**: The probability that a study will detect a true effect if it exists (1 - β).
-- **Desired Levels**: Commonly set at 80% or 90%.
-- **Type II Error (β)**: Risk of a false negative, failing to detect a true effect.
+\textcolor{red}{Next, we consider the mean difference between the} **A** and **B** \textcolor{red}{groups.}
 
----
+# Example design, A-B difference
 
-## Significance Level (α)
+::: block
+## 
 
-- **Definition**: The probability of rejecting the null hypothesis when it is true (Type I error).
-- **Common Threshold**: Typically set at 0.05.
-- **Type I Error**: Risk of a false positive.
+-   These are the estimates **per simulated study** for the difference between the **A** and the **B** group means (point estimate + *97.5% CI*).
+-   If we tested the **difference** to be greater than a value below the smallest CI limit, we would have **rejected the null hypothesis** in **each case**.
+:::
 
----
+```{r fig.height=2, fig.width=2.5, fig.pos="center"}
+source(here::here("inst","figs.r"))
 
-## Balancing α and β
+fig_3_forest
 
-- **Trade-Offs**:
-  - Lowering α reduces the chance of a Type I error but may increase the required sample size.
-  - Increasing power (reducing β) increases the likelihood of detecting true effects but may require more participants.
-- **Optimal Balance**: Depends on the study context and the consequences of errors.
+```
 
----
+# Example design, A-B difference (contd.)
 
-# Key Parameters Influencing Sample Size
+::: block
+## 
 
-- **Effect Size (δ)**: The expected difference between intervention and control groups.
-- **Variability (σ)**: The standard deviation of the outcome measure.
-- **Significance Level (α)**: The threshold for statistical significance.
-- **Power (1 - β)**: The desired probability of detecting an effect.
-- **Dropout Rates**: The anticipated proportion of participants who will not complete the study.
+-   The distribution of the **lower ends** of the CI's is of interest (2nd plot).
+-   If we tested the **difference** to be greater than 1, we would have been right 28/30 \~ 93% of cases.
+-   If we tested the **difference** to be greater than 1.5, we would have been right 9/30=30% of cases.
+:::
 
----
+```{r fig.height=2, fig.width=6, fig.pos="center"}
+source(here::here("inst","figs.r"))
 
-# Estimating Effect Size and Variability
+gridExtra::grid.arrange(fig_3_forest, fig_4_hist, nrow = 2)
 
-## Sources of Estimates
+```
 
-- **Previous Studies**: Published research and meta-analyses.
-- **Pilot Studies**: Preliminary data collection to inform estimates.
-- **Expert Opinion**: Insights from clinicians and researchers.
+# Definig Power
 
----
+::: block
+## 
 
-## Challenges and Strategies
+-   If we tested the **difference** to be greater than 1, we would have been right 100% of cases.
+-   If we tested the **difference** to be greater than 1.5, we would have been right 9/30=30% of cases.
+:::
 
-- **Uncertainty in Estimates**:
-  - Effect sizes and variability are often based on limited data.
-- **Conservative Approaches**:
-  - Using smaller expected effect sizes or larger variability to ensure adequate power.
-- **Sensitivity Analyses**:
-  - Assessing how changes in assumptions affect sample size requirements.
+The (estimated) chance for rejecting the null hypothesis for a study is called the *Power* of the study.
 
----
+A clinical trial should be powered between **80%** and **90%**.
 
-# Mathematical Foundations - Z-Score Approach
+-   If the Power is less than 80%, the **underpowered** study is unethical, as the risk/suffering to the participants has to be justified by a high chance of meaningful results
+-   if the Power is more than 90%, the study is **overpowered** and unethical because *more* subjects are subjected to risk & undue suffering than necessary (by general consensus).
 
-## Understanding Z-Scores
+# Calculating Power
 
-- **Definition**: A Z-score indicates how many standard deviations an element is from the mean.
-- **Application**: Used in hypothesis testing to determine probabilities under the normal distribution.
+::: block
+## 
 
----
+-   If we tested the **difference** to be greater than 1, we would have been right 100% of cases.
+-   If we tested the **difference** to be greater than 1.5, we would have been right 9/30=30% of cases.
+:::
 
-## Sample Size Formula for Comparing Two Means
+The Power of the study was **simulated** in this example.
 
-\[
-n = \left( \frac{Z_{1-\alpha/2} + Z_{1-\beta}}{\delta / \sigma} \right)^2
-\]
+It is a flexible approach and can be useful in non-standard design or situations (eg. the variable of interest has a peculiar distribution, the primary endpoint is a composite of not independent variables, etc.)
 
-Where:
+For standard designs, closed formulas exist for calculating the Power.
 
-- \( n \): Sample size per group
-- \( Z_{1-\alpha/2} \): Z-score for the desired significance level (e.g., 1.96 for α = 0.05)
-- \( Z_{1-\beta} \): Z-score for the desired power (e.g., 0.84 for 80% power)
-- \( \delta \): Expected effect size (mean difference)
-- \( \sigma \): Standard deviation
+# Distribution of the lower CI limits
 
----
+-   In general what we are looking for, is the distribution of the **lower CI limits** of the difference between the groups (or the critical value of the relevant statistic to be tested).
 
-# Noncentral t-Distribution
+-   We could calculate the proportion of cases where the difference is greater than a certain value and could establish a threshold above/below the chance of rejecting the null hypothesis is at our desired level for Power.
 
-## When to Use
+-   The distribution of the lower CI limits can either be assumed to have a **normal distribution** or a **t-distribution** (this is better).
 
-- Appropriate for small sample sizes when the population variance is unknown.
-- Adjusts for the additional uncertainty compared to the normal distribution.
+-   The precise distribution is given by the **non-centrality parameter** $\lambda=\frac{\delta\sqrt{n/2}}{\sigma}$ (along with the *degrees of freedom* if a t-distribution is used).
 
----
+-   $\lambda$ has a different form for different designs and it represents the effect size, as in the size of the difference relative to its variability.
 
-## Impact on Sample Size
+# Power calculation based on the Noncentrality Parameter
 
-- **Effect on Calculations**:
-  - Results in a slightly larger sample size compared to using the normal distribution.
-- **Practical Implications**:
-  - Difference is often minimal (±2 participants per group).
-  - Becomes negligible with larger sample sizes.
+::: block
+## 
 
----
+Below is the Power calculation for the example study based on the closed form solution using the t-distribution. The results show that for a sample size of 6 subjects per arm, the Power would be \~89%.
+:::
 
-# Accounting for Dropouts
+```{r fig.height=3, fig.width=6, fig.pos="center"}
+pwrss::power.t.test(ncp = (2*sqrt(6))/sqrt(2), alpha = 0.025, df = 12,
+              alternative = "greater", plot = TRUE)
 
-## Importance
+```
 
-- Ensuring sufficient power despite participant attrition.
-- Failure to account for dropouts can lead to underpowered studies.
+# Power calculation based on the Noncentrality Parameter
 
----
+::: block
+## 
 
-## Adjusting Sample Size
+Below is the Power calculation for the example study based on the closed form solution for the normal distribution. The results show that for a sample size of **5** subjects per arm, the Power would be \~89%.
+:::
 
-\[
-n_{\text{adjusted}} = \frac{n}{1 - \text{Dropout Rate}}
-\]
+```{r fig.height=3, fig.width=6, fig.pos="center"}
+pwrss::power.z.test(ncp = (2*sqrt(5))/sqrt(2), alpha = 0.025, 
+              alternative = "greater", plot = TRUE)
 
-- **Example**:
-  - Calculated \( n = 100 \) per group.
-  - Expected dropout rate = 10%.
-  - Adjusted sample size: \( n_{\text{adjusted}} = \frac{100}{0.9} \approx 112 \) per group.
+```
 
----
+# Relationship between Power and Sample size
 
-# Sample Size as an Estimate
+::: block
+## 
 
-- **Uncertainty in Parameters**:
-  - Estimates are based on assumptions and available data.
-- **Flexibility**:
-  - Be prepared to adjust the sample size as new information becomes available.
-- **Conclusion**:
-  - The calculated sample size is a guideline, not an exact requirement.
+-   Seen below is a **Power curve** for the study (using the t-distribution)
+-   For our example, the Power vs. the Sample size is shown below based on a closed formula
+-   The researcher may choose either **6** or **7** subjects **per group** to achieve a Power of at least 80% or at least 90%.
+:::
 
----
+```{r fig.height=2, fig.width=6, fig.pos="center"}
+source(here::here("inst","figs.r"))
 
-# Inverse Approach to Sample Size Estimation
+fig_5_power
 
-## Concept
+```
 
-- Determine the detectable effect size given a fixed sample size.
-- Useful when resources or feasible participant numbers are limited.
+# Corrections for dropouts
 
----
+::: block
+## 
 
-## Application
+**Assume 25% dropout rate.** For 90% Power, the final sample size should be:
 
-- **Resource Constraints**:
-  - Budget, time, or population limitations.
-- **Strategic Planning**:
-  - Helps in setting realistic objectives.
-  - Aligns expectations with what is achievable.
+$\frac{7}{100\% - 25\%} = 9.33 \approx 10$ subjects per group.\newline \newline For a total of $10 \times 2 = 20$ subjects
+:::
 
----
+-   7 subjects per group after 25% dropouts would result in a total of 20 subjects for the study.
 
-# Trade-Offs Between Sample Size and Effect Size
+-   A **correction** for dropouts is necessary because the Power calculation is based on the number of subjects that **finish** the study.
 
-- **Larger Sample Sizes**:
-  - Detect smaller effect sizes.
-  - Require more resources.
-- **Smaller Sample Sizes**:
-  - Detect only larger effect sizes.
-  - May miss clinically meaningful differences.
+-   Avoid an incorrect way of accounting for dropouts by multiplying ($7 \times 125\%=8.75$)
 
----
+-   It may be necessary for logistical purposes to calculate the **screening failures** as well. A proportion of participants will fail screening (eg. by having out-of-range lab results when the study calls for healthy participants)
 
-## Decision-Making
+# Sensitivity analysis for Sample Size estimation
 
-- **Clinical Significance**:
-  - Is the detectable effect size meaningful in practice?
-- **Feasibility**:
-  - Are the required resources available?
-- **Balancing Act**:
-  - Optimize the study design within practical constraints.
+In our example we have arrived at 20 subjects for the sample size, but have used the following suppositions:
 
----
+-   **The standard deviation of the outcome variable is 1 in both groups**
+-   **The difference between the groups is 2**
+-   **The dropout rate is 25%**
+-   The Power is 90%
+-   The null hypothesis is that the difference is 0
+-   (The alpha level is 0.05 for two-sided testing)
 
-# Special Considerations for Binary Outcomes
+The first three items are **estimated**, and therefore we invite uncertainty. Moreover, the errors in the estimates may compound one another.
 
-## Normal Approximation of the Binomial Distribution
+# Sensitivity analysis for SS estimation (contd.)
 
-- **Applicability**:
-  - Valid when sample sizes are large, and probabilities are not near 0 or 1.
-- **Benefit**:
-  - Simplifies calculations using Z-scores.
+::: block
+## 
 
----
+Unfortunately seldom seen in practice, but the interaction of these parameters should be investigated in a **sensitivity analysis** before the start of the study. This brings us to another line of thinking about the sample size.
+:::
 
-## Sample Size Formula for Proportions
+```{r fig.height=3, fig.width=6, fig.pos="center"}
+source(here::here("inst","figs.r"))
 
-\[
-n = \frac{ \left[ Z_{1-\alpha/2} \sqrt{2p(1 - p)} + Z_{1-\beta} \sqrt{p_1(1 - p_1) + p_2(1 - p_2)} \right]^2 }{ (p_1 - p_2)^2 }
-\]
+fig_6_power
 
-Where:
+```
 
-- \( p = \frac{p_1 + p_2}{2} \)
-- \( p_1, p_2 \): Proportions in control and treatment groups
+# Sensitivity analysis for SS estimation (contd..)
 
----
+::: block
+## 
 
-# Introduction to Crossover Trials
+When a given sample size is considered (here: **20 subjects** total), we could investigate under what circumstances would our study be acceptable. Here the study would be acceptable if:
 
-## Definition
+-   \footnotesize The effect size were lower than anticipated (1.5) with a SD of 0.8 even with a dropout rate of 25%\
+-   \footnotesize The SD was higher than anticipated (1.2) with a difference of 2 and a dropout rate of 25% *but not when the difference was also lower (1.5)*\
+-   \footnotesize The SD was unchanged, but the difference was lower (1.5) with a dropout rate of 25%
+:::
 
-- Participants receive multiple interventions sequentially.
-- Each participant acts as their own control.
+```{r fig.height=3, fig.width=6, fig.pos="center"}
+source(here::here("inst","figs.r"))
 
----
+fig_6_power +
+  geom_vline(xintercept = c(20), linetype = "dashed", color = "salmon4")
 
-## Advantages and Challenges
+```
 
-- **Advantages**:
-  - Increased statistical efficiency.
-  - Reduced sample size requirements.
-- **Challenges**:
-  - Potential for carryover effects.
-  - Requires careful planning of washout periods.
+# Special cases
 
----
+-   In certain cases (survival analysis) it is not the *sample size* what matters, but the *number of events*. This introduces another parameters (ratio of patients experiencing an event) which adds another layer of uncertainty.
 
-# Adaptive Trial Designs
+-   We are not covering **adpative designs**. These are studies in which the sample size may be readjusted based on *"interim analyses"* along with the stopping the study or certain arms of the study for futility/early success.
 
-## Overview
+-   In general using an **adaptive design** may be more efficient, but adds additional complexity and uncertainty for the trial.
 
-- **Definition**: Trials that allow for modifications based on interim data.
-- **Types of Adaptations**:
-  - Sample size re-estimation.
-  - Dropping or adding treatment arms.
+-   In certain cases, the analysis method used are different (more elaborate) compared to the method used to calculate the sample size (eg. analysis with baseline correction for the investigation of change and using a mixed model while the sample size calculation was based on a simple t-test).
 
----
+-   The precise methodology for determining the Sample Size often (should) involve a statistician in these special cases.
 
-## Benefits and Considerations
+# Importance of design
 
-- **Benefits**:
-  - Flexibility to respond to data.
-  - Potential for increased efficiency.
-- **Considerations**:
-  - Must maintain trial integrity.
-  - Requires pre-specification and appropriate statistical methods.
+-   **Before** a valid csample size calculation could be performed, the study design has to be defined.
 
----
+-   Of particular interest is the **primary endpoint** of the study (along with its scale) and its method of evaluation (in broad strokes).
 
-# Practical Considerations in Sample Size Estimation
+-   Often Investigators are reluctant to give the relevant **parameters** for variability or effect size. This is perhaps due to the high level of uncertainty regarding these numbers, but its the joined task of the statistician and the investigator to come up with a reasonable estimate if necessary, through several iterative steps.
 
-- **Collaboration**:
-  - Involve statisticians early.
-- **Software Tools**:
-  - Use R packages like `pwr` for calculations.
-- **Continuous Evaluation**:
-  - Reassess assumptions as new data emerge.
+-   While it is possible to define co-primary endpoints, or a joined hypothesis for the primary endpoint, the level of significance has to be adjusted in these cases, (often making the study unfeasible).
 
----
+-   In case multiple variables are to be investigated (which is in most cases), most investigations may be designated as *secondary endpoints* for which no power calculation is required (though the results of these endpoints therefore cannot be guaranteed and they are a bit less persuasive).
 
-# Examples of Sample Size Calculations
+# A remark about post hoc power.
 
-## Example 1: Comparing Two Means
+::: block
+## 
 
-- **Objective**: Detect a mean difference of 5 units.
-- **Parameters**:
-  - \( \sigma = 15 \) units
-  - \( \alpha = 0.05 \)
-  - Power = 80%
-- **Calculation**:
+Two friends are playing golf. The first one takes a swing and the ball lands on a particular spot. The second one says: "Wow! What were the odds of that ball landing exactly on that spot out of all other spots on the field?"
+:::
 
-\[
-n = \left( \frac{1.96 + 0.84}{5 / 15} \right)^2 = \left( \frac{2.80}{0.333} \right)^2 \approx 70.56
-\]
+After a study, sometimes the **Post hoc** power is reported. This is done by taking the *observed* parameters and repeating the power calculation with them instead of the original assumptions.
 
-- **Result**: Approximately 71 participants per group.
+This is problematic on a number of levels, one of which is the direct link between the observed p-value of the difference and post-hoc Power, so using the post-hoc Power to provide additional confirmation or to negate the results is circular reasoning.
 
----
+# Specific implementations
 
-## Example 2: Comparing Two Proportions
+-   A number of software has implementations for calculating Power in several situations where a closed-form solution is available.
 
-- **Objective**: Detect a difference from 40% to 60%.
-- **Parameters**:
-  - \( p_1 = 0.40 \), \( p_2 = 0.60 \)
-  - \( \alpha = 0.05 \)
-  - Power = 80%
-- **Calculation**: Use the sample size formula for proportions.
+-   A common software is **GPower**, and implementations in SAS along with most modern statistical software are also available.
 
----
+-   The author's favorite implementation is the **pwrss** R [package](https://cran.rstudio.com/web/packages/pwrss/vignettes/examples.html). For adaptive designs, the **rpact** [package](https://www.rpact.org/vignettes/getting-started/rpact_step-by-step_tutorial/) is recommended.
 
-# Key Takeaways
-
-- **Critical Role of Sample Size**: Essential for valid and credible results.
-- **Interplay of Factors**: Effect size, variability, power, significance level, and dropouts.
-- **Estimates and Assumptions**: Recognize uncertainties in parameters.
-- **Special Designs**: Crossover and adaptive trials require specific considerations.
-- **Collaboration and Planning**: Engage with experts and use appropriate tools.
-
----
-
-# Conclusion
-
-Sample size estimation balances scientific objectives with practical constraints. By carefully considering various factors and employing rigorous methods, researchers can design studies that are both efficient and effective.
-
----
-
-# Questions and Discussion
-
-We welcome any questions or comments you may have. Thank you for your attention.
-
----
-
-# Appendix A: R Code Examples
-
-## Sample Size Calculation for Comparing Two Means
-
-```{r}
-# Install and load the pwr package
-if (!requireNamespace("pwr", quietly = TRUE)) {
-  install.packages("pwr")
-}
-library(pwr)
-
-# Parameters
-effect_size <- 5 / 15  # Effect size (Cohen's d)
-power <- 0.8           # Desired power (80%)
-sig_level <- 0.05      # Significance level (alpha)
-
-# Sample Size Calculation
-result <- pwr.t.test(d = effect_size, power = power, sig.level = sig_level,
-                     type = "two.sample", alternative = "two.sided")
-
-print(result)
+-   To use any of these implementation requires the user to be informed about the specific distributions of their outcome variable and study design.
